@@ -1,0 +1,6 @@
+{
+  "name": "CODELIX — Building Digital Solutions",
+  "description": "Professional website development and software solutions platform by CODELIX. Features services, packages, online ordering, real-time project tracking, customer portal, employee workspace, complaints system, and full admin CMS.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

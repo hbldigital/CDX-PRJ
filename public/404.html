@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CODELIX — Building Digital Solutions</title>
+    <script type="text/javascript">
+      // GitHub Pages Single Page Apps redirection script
+      // Redirects direct 404 path requests to the index.html root with hash route
+      var pathSegmentsToKeep = 0;
+      var l = window.location;
+      // If repo name is in path, detect it:
+      var path = l.pathname;
+      var segments = path.split('/').filter(Boolean);
+      // For github.io/<repo-name>/..., the first segment is the repo name
+      var isGitHubPagesDomain = l.hostname.endsWith('github.io');
+      var repoPrefix = (isGitHubPagesDomain && segments.length > 0) ? '/' + segments[0] : '';
+      var route = isGitHubPagesDomain && segments.length > 0 
+        ? segments.slice(1).join('/')
+        : segments.join('/');
+
+      var target = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + repoPrefix + '/';
+      if (route) {
+        target += '#' + route;
+      }
+      if (l.search) {
+        target += (target.includes('?') ? '&' : '?') + l.search.slice(1);
+      }
+      if (l.hash) {
+        target += l.hash;
+      }
+      window.location.replace(target);
+    </script>
+  </head>
+  <body style="font-family: sans-serif; background: #0f172a; color: #fff; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0;">
+    <div style="text-align: center;">
+      <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 8px;">Redirecting to CODELIX...</h2>
+      <p style="color: #94a3b8; font-size: 14px;">Loading application view...</p>
+    </div>
+  </body>
+</html>
