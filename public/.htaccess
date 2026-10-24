@@ -1,18 +1,18 @@
 # ==============================================================
-# CODELIX cPanel & Apache Web Server Configuration (dist/.htaccess)
+# CODELIX cPanel & Apache Configuration (for direct public_html)
 # ==============================================================
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # Standard SPA fallback for direct URL access
+  # Standard SPA routing: if file or folder doesn't exist, serve index.html
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^ index.html [L]
 </IfModule>
 
-# Ensure proper MIME types for modern ECMAScript modules and CSS
+# Ensure proper MIME types for modern ECMAScript modules, CSS, and fonts
 <IfModule mod_mime.c>
   AddType application/javascript .js .mjs
   AddType text/css .css

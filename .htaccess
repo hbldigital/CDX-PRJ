@@ -1,33 +1,30 @@
 # ==============================================================
-# CODELIX cPanel & Apache Web Server Configuration
-# Supports both Git root deployment and /dist production deployment
+# CODELIX Official cPanel & Apache Web Server Configuration
+# Clean root domain (https://codelix.online/) — No /dist/ in URL!
 # ==============================================================
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # 1. Route assets directly to dist/assets if dist folder exists
-  RewriteCond %{DOCUMENT_ROOT}/dist/assets/$1 -f
-  RewriteRule ^assets/(.*)$ dist/assets/$1 [L,QSA]
+  # 1. Clean redirect from cached /dist/ to root domain
+  RewriteCond %{THE_REQUEST} \s/dist/ [NC]
+  RewriteRule ^dist/(.*)$ /$1 [R=301,L]
 
-  # 2. If dist/index.html exists and accessing root /, serve dist/index.html
-  RewriteCond %{DOCUMENT_ROOT}/dist/index.html -f
+  # 2. Route assets to dist/assets if they are located in dist
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^assets/(.*)$ dist/assets/$1 [L]
+
+  # 3. Serve dist/index.html internally for root URL / (No redirect, URL stays codelix.online)
   RewriteRule ^$ dist/index.html [L]
 
-  # 3. SPA Fallback: If requested resource is not an existing file or directory
+  # 4. Standard SPA fallback for any deep routes or direct links
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{DOCUMENT_ROOT}/dist/index.html -f
-  RewriteRule ^(.*)$ dist/index.html [L,QSA]
-
-  # 4. Standard SPA fallback if files are directly in public_html
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^ index.html [L]
+  RewriteRule ^(.*)$ dist/index.html [L]
 </IfModule>
 
-# Ensure proper MIME types for modern ECMAScript modules and CSS
+# Ensure proper MIME types for modern ECMAScript modules, CSS, and fonts
 <IfModule mod_mime.c>
   AddType application/javascript .js .mjs
   AddType text/css .css
@@ -42,7 +39,7 @@
   Header set Access-Control-Allow-Origin "*"
 </IfModule>
 
-# Enable GZIP compression
+# Enable GZIP compression for fast mobile loading
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json image/svg+xml
 </IfModule>
