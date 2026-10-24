@@ -1,11 +1,16 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 
-export default defineConfig(() => {
+export default defineConfig(({ command }) => {
+  // Configured specifically for GitHub Pages repository https://hbldigital.github.io/CDX-PRJ/
+  // When building for production, base is '/CDX-PRJ/'.
+  // In local development or server dev mode, base is '/'.
+  const base = process.env.VITE_BASE || (command === 'build' ? '/CDX-PRJ/' : '/');
+
   return {
-    base: './',
+    base,
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
