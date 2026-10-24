@@ -3,11 +3,12 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
 
-export default defineConfig(({ command }) => {
-  // Configured specifically for GitHub Pages repository https://hbldigital.github.io/CDX-PRJ/
-  // When building for production, base is '/CDX-PRJ/'.
-  // In local development or server dev mode, base is '/'.
-  const base = process.env.VITE_BASE || (command === 'build' ? '/CDX-PRJ/' : '/');
+export default defineConfig(() => {
+  // Using relative base './' so the production build works universally:
+  // - On GitHub Pages: https://hbldigital.github.io/CDX-PRJ/
+  // - On cPanel public_html: https://codelix.online/ or any custom domain
+  // - In local preview & subdirectories
+  const base = process.env.VITE_BASE || './';
 
   return {
     base,

@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/codepmuo/public_html/
+    - /bin/cp -R dist/* $DEPLOYPATH 2>/dev/null || :
+    - /bin/cp .htaccess $DEPLOYPATH 2>/dev/null || :

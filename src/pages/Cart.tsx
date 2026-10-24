@@ -164,8 +164,11 @@ export const Cart: React.FC<CartProps> = ({ onNavigate }) => {
   const selectedBank = banks.find((b) => b.id === selectedBankId) || banks[0];
   const selectedCrypto = cryptoWallets.find((c) => c.id === selectedCryptoId) || cryptoWallets[0];
 
-  // USD converted price
-  const totalInUsd = Math.round((total / usdToPkrRate) * 100) / 100;
+  // Dual Currency Calculations (PKR & USDT)
+  const effectiveRate = usdToPkrRate > 0 ? usdToPkrRate : 271;
+  const subtotalInUsd = (subtotal / effectiveRate).toFixed(2);
+  const discountInUsd = (discount / effectiveRate).toFixed(2);
+  const totalInUsd = (total / effectiveRate).toFixed(2);
 
   const handleCheckoutSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -541,9 +544,13 @@ export const Cart: React.FC<CartProps> = ({ onNavigate }) => {
                           <strong>Transfer Instructions:</strong> {selectedBank.instructions}
                         </div>
 
-                        <div className="p-2.5 bg-white/80 rounded-xl border border-blue-100 flex items-center justify-between text-xs font-mono font-bold">
-                          <span className="text-slate-600">Payable in PKR:</span>
-                          <span className="text-blue-700 text-sm">PKR {total.toLocaleString()}</span>
+                        <div className="p-3 bg-white/95 rounded-xl border border-blue-200/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs font-mono font-bold">
+                          <span className="text-slate-700">Total Payable Amount:</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-blue-700 text-sm font-black">PKR {total.toLocaleString()}</span>
+                            <span className="text-slate-400">|</span>
+                            <span className="text-emerald-700 text-sm font-black">${totalInUsd} USDT</span>
+                          </div>
                         </div>
                       </div>
                     )}
@@ -617,16 +624,18 @@ export const Cart: React.FC<CartProps> = ({ onNavigate }) => {
                         {/* Automatic Conversion Display */}
                         <div className="p-3 bg-emerald-600 text-white rounded-xl shadow-xs flex items-center justify-between text-xs">
                           <div>
-                            <span className="text-[11px] text-emerald-100 block">Total Converted to USD:</span>
+                            <span className="text-[11px] text-emerald-100 block">Total Converted to USD / USDT:</span>
                             <span className="text-xs font-mono text-emerald-200">
-                              PKR {total.toLocaleString()} ÷ {usdToPkrRate} PKR
+                              PKR {total.toLocaleString()} ÷ {effectiveRate} PKR
                             </span>
                           </div>
                           <div className="text-right">
                             <span className="text-xl font-mono font-black text-white">
-                              ${totalInUsd} {selectedCrypto.symbol}
+                              ${totalInUsd} {selectedCrypto?.symbol || 'USDT'}
                             </span>
-                            <span className="text-[10px] block text-emerald-100">Fixed rate applied</span>
+                            <span className="text-[10px] block text-emerald-100 font-medium">
+                              Equal to PKR {total.toLocaleString()}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -873,29 +882,48 @@ export const Cart: React.FC<CartProps> = ({ onNavigate }) => {
                 <div className="border-t border-slate-100 pt-4 space-y-2 text-xs">
                   <div className="flex justify-between text-slate-600">
                     <span>Subtotal:</span>
-                    <span className="font-mono">PKR {subtotal.toLocaleString()}</span>
+                    <div className="text-right font-mono">
+                      <span className="font-bold text-slate-800">PKR {subtotal.toLocaleString()}</span>
+                      <span className="text-[11px] text-slate-500 ml-1.5">(${subtotalInUsd} USDT)</span>
+                    </div>
                   </div>
                   {discount > 0 && (
                     <div className="flex justify-between text-emerald-600 font-bold">
                       <span>Discount ({couponCode}):</span>
-                      <span className="font-mono">- PKR {discount.toLocaleString()}</span>
+                      <div className="text-right font-mono">
+                        <span>- PKR {discount.toLocaleString()}</span>
+                        <span className="text-[11px] text-emerald-600 ml-1.5">(-${discountInUsd} USDT)</span>
+                      </div>
                     </div>
                   )}
 
-                  <div className="border-t border-slate-200 pt-3 flex justify-between items-baseline font-black text-slate-900 text-base">
-                    <span>Grand Total:</span>
-                    <span className="text-xl font-mono text-blue-600">
-                      PKR {total.toLocaleString()}
+                  {/* Fixed Exchange Rate Indicator */}
+                  <div className="p-2 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-between text-[11px] text-slate-600">
+                    <span className="flex items-center gap-1 font-semibold text-slate-700">
+                      <Coins className="w-3.5 h-3.5 text-blue-600" />
+                      Exchange Rate (Admin Set):
+                    </span>
+                    <span className="font-mono font-bold text-slate-800 bg-white px-2 py-0.5 rounded border border-slate-200">
+                      1 USD / USDT = {effectiveRate} PKR
                     </span>
                   </div>
 
-                  {/* Equivalent in USD if paying crypto */}
-                  {paymentType === 'crypto' && (
-                    <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex justify-between items-center text-xs font-mono font-bold text-emerald-900">
-                      <span>USDT Equivalent:</span>
-                      <span className="text-base text-emerald-700">${totalInUsd} USDT</span>
+                  <div className="border-t border-slate-200 pt-3 space-y-2">
+                    <div className="flex justify-between items-baseline font-black text-slate-900 text-base">
+                      <span>Grand Total (PKR):</span>
+                      <span className="text-2xl font-mono text-blue-600">
+                        PKR {total.toLocaleString()}
+                      </span>
                     </div>
-                  )}
+
+                    <div className="p-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-200 flex justify-between items-center text-xs font-mono font-bold text-emerald-900">
+                      <span className="flex items-center gap-1.5">
+                        <Coins className="w-4 h-4 text-emerald-600" />
+                        <span>USDT Total (Crypto):</span>
+                      </span>
+                      <span className="text-lg text-emerald-700 font-black">${totalInUsd} USDT</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Terms agreement */}
@@ -928,7 +956,7 @@ export const Cart: React.FC<CartProps> = ({ onNavigate }) => {
                   {loading ? (
                     <span>Recording Order...</span>
                   ) : (
-                    <span>Confirm & Submit Order ({paymentType === 'crypto' ? `$${totalInUsd} USDT` : `PKR ${total.toLocaleString()}`})</span>
+                    <span>Confirm & Submit Order (PKR {total.toLocaleString()} / ${totalInUsd} USDT)</span>
                   )}
                   <ArrowRight className="w-4 h-4" />
                 </button>

@@ -260,6 +260,21 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   Careers & Job Vacancies
                 </button>
               </li>
+              <li className="pt-2 border-t border-slate-800">
+                <button onClick={() => onNavigate('client-login')} className="text-cyan-400 hover:underline transition-colors font-bold">
+                  Client Portal Login →
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('employee-login')} className="text-blue-400 hover:underline transition-colors font-bold">
+                  Employee Hub Login →
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('admin-login')} className="text-amber-400 hover:underline transition-colors font-bold">
+                  Admin CMS Login →
+                </button>
+              </li>
             </ul>
           </div>
 

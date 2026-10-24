@@ -1,0 +1,11 @@
+{
+  "cpanel_mysql": {
+    "host": "localhost",
+    "port": 3306,
+    "database": "codepmuo_codelix",
+    "username": "codepmuo_user",
+    "password": "YOUR_DATABASE_PASSWORD_HERE",
+    "charset": "utf8mb4"
+  },
+  "instructions": "Replace the values above with your cPanel MySQL Database credentials created under cPanel > MySQL Databases."
+}

@@ -12,6 +12,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+      // Fallback for cPanel / static Apache environments serving repository root
+      if (typeof window !== 'undefined' && location.pathname.indexOf('/dist') === -1 && location.hostname !== 'localhost') {
+        fetch('dist/index.html', { method: 'HEAD' }).then(function(r) {
+          if (r.ok) window.location.replace('dist/' + (window.location.search || '') + (window.location.hash || ''));
+        }).catch(function(){});
+      }
+    </script>
   </head>
   <body class="bg-white text-slate-900 antialiased selection:bg-cyan-500 selection:text-white min-h-screen">
     <div id="root"></div>

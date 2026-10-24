@@ -32,7 +32,7 @@ jobs:
 
       - name: Build production bundle
         env:
-          VITE_BASE: '/CDX-PRJ/'
+          VITE_BASE: './'
         run: npm run build
 
       - name: Setup Pages

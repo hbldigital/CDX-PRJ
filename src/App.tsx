@@ -25,6 +25,7 @@ import { CustomerDashboard } from './pages/Customer/CustomerDashboard';
 import { EmployeeDashboard } from './pages/Employee/EmployeeDashboard';
 import { AdminDashboard } from './pages/Admin/AdminDashboard';
 import { LegalPage } from './pages/Legal/LegalPage';
+import { LoginPortal } from './pages/Auth/LoginPortal';
 
 function getInitialView(): string {
   if (typeof window !== 'undefined' && window.location.hash) {
@@ -189,6 +190,22 @@ export function AppContent() {
             initialTab={viewParams?.tab || 'privacy'}
             onNavigate={navigateTo}
           />
+        )}
+
+        {(currentView === 'login' || currentView === 'client-login') && (
+          <LoginPortal initialRole="client" onNavigate={navigateTo} />
+        )}
+
+        {currentView === 'employee-login' && (
+          <LoginPortal initialRole="employee" onNavigate={navigateTo} />
+        )}
+
+        {currentView === 'admin-login' && (
+          <LoginPortal initialRole="admin" onNavigate={navigateTo} />
+        )}
+
+        {currentView === 'register' && (
+          <LoginPortal initialRole="register" onNavigate={navigateTo} />
         )}
       </main>
 
